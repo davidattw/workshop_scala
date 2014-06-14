@@ -11,11 +11,11 @@ object Answer{
   }
 }
 class Answer(private val numbers: Array[Int]) {
-  def compare(other: Answer): String = {
+  def compare(other: Answer): AnswerResult = {
     val numberCorrectCount = numbers.intersect(other.numbers).size
     val bullsCount = numbers.zip(other.numbers).count(p => p._1 == p._2)
     val cowsCount = numberCorrectCount - bullsCount
-    f"$bullsCount%sA$cowsCount%sB"
+    new AnswerResult(bullsCount, cowsCount)
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Answer]
@@ -33,6 +33,11 @@ class Answer(private val numbers: Array[Int]) {
   }
 }
 
+class AnswerResult(bullsCount: Int, cowsCount: Int){
+  def out(action: (Int,Int) => String): String = {
+    action(bullsCount,cowsCount)
+  }
+}
 class AnswerGenerator() {
   def generate(length: Int): Answer = {
     new Answer(next(length))

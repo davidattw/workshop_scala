@@ -18,7 +18,7 @@ class Game(answerGenerator: AnswerGenerator) {
   def guess(guessNumber: String): String = {
     try{
       val answer: Answer = Answer(guessNumber)
-      actualAnswer.compare(answer)
+      actualAnswer.compare(answer).out((b,c) => f"$b%sA$c%sB")
     }catch{
       case ex: IllegalArgumentException => ex.getMessage
     }
