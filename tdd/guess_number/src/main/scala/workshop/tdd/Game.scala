@@ -2,9 +2,10 @@ package workshop.tdd
 
 object Main extends App{
   override def main(args: Array[String]): Unit = {
-    Game(new AnswerGenerator(),new GameController())
-      .start()
-      .guess()
+    val controller: GameController = new GameController()
+    val game = Game(new AnswerGenerator(),controller)
+    controller.onFailed = () => game.guess()
+    game.start().guess()
   }
 }
 
@@ -21,6 +22,7 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
   private var actualAnswer: Answer = null
 
   def start(): Game = {
+    controller.init()
     actualAnswer = answerGenerator.generate(Game.numberLength)
     this
   }
@@ -42,6 +44,9 @@ class GameController{
   protected val history = collection.mutable.ArrayBuffer[String]()
   var onFailed: (()=> Unit) = null
 
+  def init(){
+    history.clear()
+  }
   def in(): String = {
     guessNumber = Console.readLine()
     guessNumber
@@ -54,20 +59,16 @@ class GameController{
     if(answerResult.right()){
       return
     }
-    if(history.size >= Game.maxTryNumber){
-      out("You are lose")
-    }else{
-      onFailed()
-    }
+    next
   }
 
   def out(result: String){
     addHistory(result)
     print(result)
-    onFailed()
+    next
   }
 
-  def outHistory(){
+  private def outHistory(){
     history.foreach(println(_))
   }
 
@@ -78,4 +79,18 @@ class GameController{
   private def addHistory(result: String){
     history += f"$guessNumber $result"
   }
+
+  private def reachToMaxTryNumber: Boolean = {
+    history.size >= Game.maxTryNumber
+  }
+
+  private def next {
+    if (reachToMaxTryNumber) {
+      print("You are lose")
+    } else {
+      outHistory()
+      onFailed()
+    }
+  }
+
 }
