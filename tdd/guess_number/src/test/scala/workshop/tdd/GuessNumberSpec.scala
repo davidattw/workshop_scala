@@ -12,5 +12,12 @@ class GuessNumberSpec extends FunSpec with Matchers{
       val result: String = game.guess("5 6 7 8")
       result should be("0A0B")
     }
+
+    it("should return 4A0B when all number is correct") {
+      val game: Game = Game("1 2 3 4").start()
+      val result: String = game.guess("1 2 3 4")
+      result should be("4A0B")
+    }
+
   }
 }
