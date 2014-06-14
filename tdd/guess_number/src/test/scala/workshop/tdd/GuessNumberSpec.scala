@@ -12,6 +12,7 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
   override protected def beforeEach(): Unit = {
     controller = new StubGameController
     game = Game(new FakeAnswerGenerator, controller).start()
+    controller.onFailed = () => {}
   }
 
   describe("guess number"){
@@ -84,6 +85,21 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       history.size should be(2)
       history(0) should be("2 1 6 7 0A2B")
       history(1) should be("1 2 3 4 4A0B")
+    }
+  }
+
+  describe("on failed") {
+    it("should run on failed when failed") {
+      var run = false
+      controller.onFailed = () => { run = true}
+      guess("1 2 4 5")
+      run should be(true)
+    }
+
+    it("should exit when failed number reach to 6") {
+      controller.onFailed = () => { }
+      (0 to 5).foreach(i => guess("1 2 4 5"))
+      controller.guessResult should be("You are lose")
     }
   }
 }

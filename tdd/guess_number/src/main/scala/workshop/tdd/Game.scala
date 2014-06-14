@@ -10,6 +10,7 @@ object Main extends App{
 
 object Game{
   val numberLength = 4
+  val maxTryNumber = 6
   val validator = new InputValidator(Array(new LengthValidator(Game.numberLength),new NumberValidator()))
 
   def apply(answerGenerator: AnswerGenerator,controller: GameController): Game = {
@@ -39,6 +40,7 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
 class GameController{
   protected var guessNumber: String = ""
   protected val history = collection.mutable.ArrayBuffer[String]()
+  var onFailed: (()=> Unit) = null
 
   def in(): String = {
     guessNumber = Console.readLine()
@@ -46,17 +48,29 @@ class GameController{
   }
   def out(answerResult: AnswerResult){
     val result: String = answerResult.out((b,c) => f"$b%sA$c%sB")
-    out(result)
+    addHistory(result)
+    print(result)
+
+    if(answerResult.right()){
+      return
+    }
+    if(history.size >= Game.maxTryNumber){
+      out("You are lose")
+    }else{
+      onFailed()
+    }
   }
 
   def out(result: String){
     addHistory(result)
     print(result)
+    onFailed()
   }
 
   def outHistory(){
     history.foreach(println(_))
   }
+
   protected def print(result: String) {
     println(result)
   }
