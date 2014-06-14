@@ -1,5 +1,7 @@
 package workshop.tdd
 
+import scala.util.Random
+
 object Answer{
   private val validator = new InputValidator(Array(new LengthValidator,new NumberValidator))
 
@@ -15,6 +17,31 @@ class Answer(private val numbers: Array[Int]) {
     val bullsCount = numbers.zip(other.numbers).count(p => p._1 == p._2)
     val cowsCount = numberCorrectCount - bullsCount
     f"$bullsCount%sA$cowsCount%sB"
+  }
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Answer]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Answer =>
+      (that canEqual this) &&
+        numbers == that.numbers
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(numbers)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
+}
+
+class AnswerGenerator() {
+  def generate(length: Int): Answer = {
+    new Answer(next(length))
+  }
+
+  private def next(length: Int): Array[Int] = {
+    val tryCount: Int = length * 2
+    (0 to 9).map(i => Random.nextInt(tryCount)).distinct.take(length).toArray
   }
 }
 

@@ -57,4 +57,12 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       result should be("Not a valid guess")
     }
   }
+
+  describe("random answer generator"){
+    it("should generate random answer"){
+      val generator: AnswerGenerator = new AnswerGenerator()
+      val distinctAnswerSize: Int = (0 to 9).map(i => generator.generate(4)).distinct.size
+      distinctAnswerSize should be(10)
+    }
+  }
 }
