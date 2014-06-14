@@ -25,5 +25,11 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       result should be("4A0B")
     }
 
+    it("should return 1A0B when 1 5 6 7") {
+      val guessNumber = "1 5 6 7"
+      val result = game.guess(guessNumber)
+      result should be("1A0B")
+    }
+
   }
 }
