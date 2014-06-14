@@ -7,9 +7,10 @@ object Answer{
 }
 class Answer(private val numbers: Array[Int]) {
   def compare(other: Answer): String = {
-    val bullCount = numberWithIndex(numbers)
-      .intersect(numberWithIndex(other.numbers)).length
-    f"$bullCount%sA0B"
+    val numberCorrectCount = numbers.intersect(other.numbers).size
+    val bullsCount = numberWithIndex(numbers).intersect(numberWithIndex(other.numbers)).length
+    val cowsCount = numberCorrectCount - bullsCount
+    f"$bullsCount%sA$cowsCount%sB"
   }
 
   private def numberWithIndex(numbers: Array[Int]): IndexedSeq[(Int, Int)] = {
