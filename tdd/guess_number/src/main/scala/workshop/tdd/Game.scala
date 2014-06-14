@@ -11,6 +11,7 @@ object Game {
 class Game(answerGenerator: AnswerGenerator, controller: GameController) {
   private var actualAnswer: Answer = null
   private val history = collection.mutable.ArrayBuffer[String]()
+
   def start(): Game = {
     actualAnswer = answerGenerator.generate(Game.numberLength)
     this
@@ -21,7 +22,6 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
       val guessNumber: String = controller.in()
       val answer: Answer = Answer(guessNumber)
       val result = actualAnswer.compare(answer).out((b,c) => f"$b%sA$c%sB")
-      history += f"$guessNumber $result"
       controller.out(result)
     }catch{
       case ex: IllegalArgumentException => controller.out(ex.getMessage)
@@ -34,10 +34,23 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
 }
 
 class GameController{
+  protected var guessNumber: String = ""
+  protected val history = collection.mutable.ArrayBuffer[String]()
+
   def in(): String = {
-    System.console().readLine()
+    guessNumber = System.console().readLine()
+    guessNumber
   }
-  def out(output: String){
-    println(output)
+  def out(result: String){
+    history += f"$guessNumber $result"
+    println(history.length)
+    print(result)
+  }
+
+  def outHistory(){
+    history.foreach(println(_))
+  }
+  protected def print(result: String) {
+    println(result)
   }
 }

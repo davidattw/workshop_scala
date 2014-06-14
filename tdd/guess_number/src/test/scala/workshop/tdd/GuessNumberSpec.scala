@@ -7,9 +7,10 @@ import org.scalatest.{BeforeAndAfterEach, Matchers, FunSpec}
 @RunWith(classOf[JUnitRunner])
 class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
   var game: Game = null
-  val controller: StubGameController = new StubGameController
+  var controller: StubGameController = null
 
   override protected def beforeEach(): Unit = {
+    controller = new StubGameController
     game = Game(new FakeAnswerGenerator, controller).start()
   }
 
@@ -41,7 +42,7 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
 
 
   private def guess(number: String): String = {
-    controller.guessNumber = number
+    controller.setGuessNumber(number)
     game.guess()
     controller.guessResult
   }
@@ -79,7 +80,7 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       guess("2 1 6 7")
       guess("1 2 3 4")
 
-      val history: List[String] = game.getHistory()
+      val history: List[String] = controller.getHistory()
       history.size should be(2)
       history(0) should be("2 1 6 7 0A2B")
       history(1) should be("1 2 3 4 4A0B")
@@ -95,13 +96,19 @@ class FakeAnswerGenerator extends AnswerGenerator{
 
 class StubGameController extends GameController {
   var guessResult: String = ""
-  var guessNumber: String = ""
 
   override def in(): String = {
     guessNumber
   }
 
-  override def out(result: String): Unit = {
+  override def print(result: String) {
     guessResult = result
+  }
+
+  def setGuessNumber(number: String) {
+    guessNumber = number
+  }
+  def getHistory(): List[String] = {
+    history.toList
   }
 }
