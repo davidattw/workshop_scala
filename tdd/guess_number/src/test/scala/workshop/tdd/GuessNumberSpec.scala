@@ -65,6 +65,18 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       distinctAnswerSize should be(10)
     }
   }
+
+  describe("guess history") {
+    it("should record every guess result") {
+      game.guess("2 1 6 7")
+      game.guess("1 2 3 4")
+
+      val history: List[String] = game.getHistory()
+      history.size should be(2)
+      history(0) should be("2 1 6 7 0A2B")
+      history(1) should be("1 2 3 4 4A0B")
+    }
+  }
 }
 
 class FakeAnswerGenerator extends AnswerGenerator{
