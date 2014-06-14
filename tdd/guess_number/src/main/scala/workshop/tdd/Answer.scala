@@ -3,11 +3,10 @@ package workshop.tdd
 import scala.util.Random
 
 object Answer{
-  private val validator = new InputValidator(Array(new LengthValidator,new NumberValidator))
 
   def apply(answerNumber: String): Answer = {
     val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt).distinct
-    validator.validate(numbers)
+    Game.validator.validate(numbers)
     new Answer(numbers)
   }
 }
@@ -54,9 +53,9 @@ class InputValidator(val validators: Array[Validator]) extends Validator{
 trait Validator {
   def validate(numbers: Array[Int])
 }
-class LengthValidator extends Validator{
+class LengthValidator(length: Int) extends Validator{
   override def validate(numbers: Array[Int]) {
-    if (numbers.length != 4) {
+    if (numbers.length != length) {
       throw new IllegalArgumentException("Not a valid guess")
     }
   }

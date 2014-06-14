@@ -1,6 +1,9 @@
 package workshop.tdd
 
 object Game {
+  val numberLength = 4
+  val validator = new InputValidator(Array(new LengthValidator(Game.numberLength),new NumberValidator()))
+
   def apply(answerGenerator: AnswerGenerator): Game = {
     new Game(answerGenerator)
   }
@@ -8,7 +11,7 @@ object Game {
 class Game(answerGenerator: AnswerGenerator) {
   var actualAnswer: Answer = null
   def start(): Game = {
-    actualAnswer = answerGenerator.generate(4)
+    actualAnswer = answerGenerator.generate(Game.numberLength)
     this
   }
 
