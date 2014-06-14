@@ -41,7 +41,8 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
 
 
   private def guess(number: String): String = {
-    game.guess(number)
+    controller.guessNumber = number
+    game.guess()
     controller.guessResult
   }
 
@@ -94,6 +95,12 @@ class FakeAnswerGenerator extends AnswerGenerator{
 
 class StubGameController extends GameController {
   var guessResult: String = ""
+  var guessNumber: String = ""
+
+  override def in(): String = {
+    guessNumber
+  }
+
   override def out(result: String): Unit = {
     guessResult = result
   }

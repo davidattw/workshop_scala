@@ -16,8 +16,9 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
     this
   }
 
-  def guess(guessNumber: String) = {
+  def guess() = {
     try{
+      val guessNumber: String = controller.in()
       val answer: Answer = Answer(guessNumber)
       val result = actualAnswer.compare(answer).out((b,c) => f"$b%sA$c%sB")
       history += f"$guessNumber $result"
@@ -33,6 +34,9 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
 }
 
 class GameController{
+  def in(): String = {
+    System.console().readLine()
+  }
   def out(output: String){
     println(output)
   }
