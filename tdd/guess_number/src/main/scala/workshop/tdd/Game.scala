@@ -1,6 +1,14 @@
 package workshop.tdd
 
-object Game {
+object Main extends App{
+  override def main(args: Array[String]): Unit = {
+    Game(new AnswerGenerator(),new GameController())
+      .start()
+      .guess()
+  }
+}
+
+object Game{
   val numberLength = 4
   val validator = new InputValidator(Array(new LengthValidator(Game.numberLength),new NumberValidator()))
 
@@ -10,7 +18,6 @@ object Game {
 }
 class Game(answerGenerator: AnswerGenerator, controller: GameController) {
   private var actualAnswer: Answer = null
-  private val history = collection.mutable.ArrayBuffer[String]()
 
   def start(): Game = {
     actualAnswer = answerGenerator.generate(Game.numberLength)
@@ -19,18 +26,14 @@ class Game(answerGenerator: AnswerGenerator, controller: GameController) {
 
   def guess() = {
     try{
-      val guessNumber: String = controller.in()
-      val answer: Answer = Answer(guessNumber)
-      val result = actualAnswer.compare(answer).out((b,c) => f"$b%sA$c%sB")
-      controller.out(result)
+      val guessNumber = controller.in()
+      val answer = Answer(guessNumber)
+      controller.out(actualAnswer.compare(answer))
     }catch{
       case ex: IllegalArgumentException => controller.out(ex.getMessage)
     }
   }
 
-  def getHistory(): List[String] = {
-    history.toList
-  }
 }
 
 class GameController{
@@ -38,12 +41,16 @@ class GameController{
   protected val history = collection.mutable.ArrayBuffer[String]()
 
   def in(): String = {
-    guessNumber = System.console().readLine()
+    guessNumber = Console.readLine()
     guessNumber
   }
+  def out(answerResult: AnswerResult){
+    val result: String = answerResult.out((b,c) => f"$b%sA$c%sB")
+    out(result)
+  }
+
   def out(result: String){
-    history += f"$guessNumber $result"
-    println(history.length)
+    addHistory(result)
     print(result)
   }
 
@@ -52,5 +59,9 @@ class GameController{
   }
   protected def print(result: String) {
     println(result)
+  }
+
+  private def addHistory(result: String){
+    history += f"$guessNumber $result"
   }
 }
