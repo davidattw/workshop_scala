@@ -1,9 +1,11 @@
 package workshop.tdd
 
 object Answer{
+  private val validator = new InputValidator(Array(new LengthValidator,new NumberValidator))
+
   def apply(answerNumber: String): Answer = {
     val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt)
-    new InputValidator(Array(new LengthValidator,new NumberValidator)).validate(numbers)
+    validator.validate(numbers)
     new Answer(numbers)
   }
 }
