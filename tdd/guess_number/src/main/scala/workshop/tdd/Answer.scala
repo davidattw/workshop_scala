@@ -4,7 +4,7 @@ object Answer{
   private val validator = new InputValidator(Array(new LengthValidator,new NumberValidator))
 
   def apply(answerNumber: String): Answer = {
-    val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt)
+    val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt).distinct
     validator.validate(numbers)
     new Answer(numbers)
   }

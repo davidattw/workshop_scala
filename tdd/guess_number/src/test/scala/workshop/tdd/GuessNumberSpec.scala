@@ -50,5 +50,11 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       val result: String = game.guess(guess)
       result should be("Not a valid guess")
     }
+
+    it("should return Not a valid guess with 1 1 2 3") {
+      val guess = "1 1 2 3"
+      val result: String = game.guess(guess)
+      result should be("Not a valid guess")
+    }
   }
 }
