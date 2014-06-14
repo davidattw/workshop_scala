@@ -1,14 +1,14 @@
 package workshop.tdd
 
 object Game {
-  def apply(actualAnswerNumber: String): Game = {
-    new Game(actualAnswerNumber)
+  def apply(answerGenerator: AnswerGenerator): Game = {
+    new Game(answerGenerator)
   }
 }
-class Game(actualAnswerNumber: String) {
+class Game(answerGenerator: AnswerGenerator) {
   var actualAnswer: Answer = null
   def start(): Game = {
-    actualAnswer = Answer(actualAnswerNumber)
+    actualAnswer = answerGenerator.generate(4)
     this
   }
 

@@ -9,7 +9,7 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
   var game: Game = null
 
   override protected def beforeEach(): Unit = {
-    game = Game("1 2 3 4").start()
+    game = Game(new FakeAnswerGenerator).start()
   }
 
   describe("guess number"){
@@ -64,5 +64,11 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
       val distinctAnswerSize: Int = (0 to 9).map(i => generator.generate(4)).distinct.size
       distinctAnswerSize should be(10)
     }
+  }
+}
+
+class FakeAnswerGenerator extends AnswerGenerator{
+  override def generate(length: Int): Answer = {
+    return Answer("1 2 3 4")
   }
 }
