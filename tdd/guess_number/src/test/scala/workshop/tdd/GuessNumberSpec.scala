@@ -7,53 +7,60 @@ import org.scalatest.{BeforeAndAfterEach, Matchers, FunSpec}
 @RunWith(classOf[JUnitRunner])
 class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
   var game: Game = null
+  val controller: StubGameController = new StubGameController
 
   override protected def beforeEach(): Unit = {
-    game = Game(new FakeAnswerGenerator).start()
+    game = Game(new FakeAnswerGenerator, controller).start()
   }
 
   describe("guess number"){
     it("should return 0A0B when no number is correct") {
       val guessNumber = "5 6 7 8"
-      val result = game.guess(guessNumber)
+      val result = guess(guessNumber)
       result should be("0A0B")
     }
 
     it("should return 4A0B when all number is correct") {
       val guessNumber = "1 2 3 4"
-      val result = game.guess(guessNumber)
+      val result = guess(guessNumber)
       result should be("4A0B")
     }
 
     it("should return 1A0B when 1 5 6 7") {
       val guessNumber = "1 5 6 7"
-      val result = game.guess(guessNumber)
+      val result = guess(guessNumber)
       result should be("1A0B")
     }
 
     it("should return 0A1B when 4 3 2 1") {
-      val guess: String = "4 3 2 1"
-      val result: String = game.guess(guess)
+      val guessNumber: String = "4 3 2 1"
+      val result: String = guess(guessNumber)
       result should be("0A4B")
     }
   }
 
+
+  private def guess(number: String): String = {
+    game.guess(number)
+    controller.guessResult
+  }
+
   describe("guess validate") {
     it("should return Not a valid guess with 1 2") {
-      val guess = "1 2"
-      val result: String = game.guess(guess)
+      val guessNumber = "1 2"
+      val result: String = guess(guessNumber)
       result should be("Not a valid guess")
     }
 
     it("should return Not a valid guess with 1 2 3 10") {
-      val guess = "1 2 3 10"
-      val result: String = game.guess(guess)
+      val guessNumber = "1 2 3 10"
+      val result: String = guess(guessNumber)
       result should be("Not a valid guess")
     }
 
     it("should return Not a valid guess with 1 1 2 3") {
-      val guess = "1 1 2 3"
-      val result: String = game.guess(guess)
+      val guessNumber = "1 1 2 3"
+      val result: String = guess(guessNumber)
       result should be("Not a valid guess")
     }
   }
@@ -68,8 +75,8 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
 
   describe("guess history") {
     it("should record every guess result") {
-      game.guess("2 1 6 7")
-      game.guess("1 2 3 4")
+      guess("2 1 6 7")
+      guess("1 2 3 4")
 
       val history: List[String] = game.getHistory()
       history.size should be(2)
@@ -82,5 +89,12 @@ class GuessNumberSpec extends FunSpec with Matchers with BeforeAndAfterEach{
 class FakeAnswerGenerator extends AnswerGenerator{
   override def generate(length: Int): Answer = {
     return Answer("1 2 3 4")
+  }
+}
+
+class StubGameController extends GameController {
+  var guessResult: String = ""
+  override def out(result: String): Unit = {
+    guessResult = result
   }
 }

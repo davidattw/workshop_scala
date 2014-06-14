@@ -3,7 +3,6 @@ package workshop.tdd
 import scala.util.Random
 
 object Answer{
-
   def apply(answerNumber: String): Answer = {
     val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt).distinct
     Game.validator.validate(numbers)

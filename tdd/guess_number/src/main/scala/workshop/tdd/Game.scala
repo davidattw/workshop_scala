@@ -4,11 +4,11 @@ object Game {
   val numberLength = 4
   val validator = new InputValidator(Array(new LengthValidator(Game.numberLength),new NumberValidator()))
 
-  def apply(answerGenerator: AnswerGenerator): Game = {
-    new Game(answerGenerator)
+  def apply(answerGenerator: AnswerGenerator,controller: GameController): Game = {
+    new Game(answerGenerator,controller)
   }
 }
-class Game(answerGenerator: AnswerGenerator) {
+class Game(answerGenerator: AnswerGenerator, controller: GameController) {
   private var actualAnswer: Answer = null
   private val history = collection.mutable.ArrayBuffer[String]()
   def start(): Game = {
@@ -16,18 +16,24 @@ class Game(answerGenerator: AnswerGenerator) {
     this
   }
 
-  def guess(guessNumber: String): String = {
+  def guess(guessNumber: String) = {
     try{
       val answer: Answer = Answer(guessNumber)
       val result = actualAnswer.compare(answer).out((b,c) => f"$b%sA$c%sB")
       history += f"$guessNumber $result"
-      result
+      controller.out(result)
     }catch{
-      case ex: IllegalArgumentException => ex.getMessage
+      case ex: IllegalArgumentException => controller.out(ex.getMessage)
     }
   }
 
   def getHistory(): List[String] = {
     history.toList
+  }
+}
+
+class GameController{
+  def out(output: String){
+    println(output)
   }
 }
