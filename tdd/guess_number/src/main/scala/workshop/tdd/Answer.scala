@@ -6,6 +6,10 @@ object Answer{
     if(numbers.length != 4) {
       throw new IllegalArgumentException("Not a valid guess")
     }
+
+    if (numbers.exists(i => i < 0 || i > 9)) {
+      throw new IllegalArgumentException("Not a valid guess")
+    }
     new Answer(numbers)
   }
 }
