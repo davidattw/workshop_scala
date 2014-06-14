@@ -2,7 +2,11 @@ package workshop.tdd
 
 object Answer{
   def apply(answerNumber: String): Answer = {
-    new Answer(answerNumber.split(" ").map(_.toInt))
+    val numbers: Array[Int] = answerNumber.split(" ").map(_.toInt)
+    if(numbers.length != 4) {
+      throw new IllegalArgumentException("Not a valid guess")
+    }
+    new Answer(numbers)
   }
 }
 class Answer(private val numbers: Array[Int]) {

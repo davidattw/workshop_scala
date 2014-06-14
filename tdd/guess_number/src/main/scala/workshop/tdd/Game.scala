@@ -13,6 +13,11 @@ class Game(actualAnswerNumber: String) {
   }
 
   def guess(guessNumber: String): String = {
-    actualAnswer.compare(Answer(guessNumber))
+    try{
+      val answer: Answer = Answer(guessNumber)
+      actualAnswer.compare(answer)
+    }catch{
+      case ex: IllegalArgumentException => ex.getMessage
+    }
   }
 }
